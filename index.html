@@ -2,12 +2,11 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>FTOAO</title>
+  <title>FTOAO </title>
   <style>
     body {
       margin: 0;
       background: black;
-      color: white;
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
@@ -59,6 +58,7 @@
         "Algol","Alpheratz","Hamal","Markab","Enif"
       ];
 
+      // مولد أرقام ثابتة (seeded RNG)
       function createSeededRNG(seed) {
         let s = seed >>> 0;
         return function() {
@@ -67,16 +67,22 @@
         };
       }
 
-      const rnd = createSeededRNG(98765);
+      const rnd = createSeededRNG(123456); // نفس المواقع كل مرة
 
-      // إنشاء 100 نجمة بمواقع وأحجام ثابتة
+      // إنشاء 100 نجمة
       const starData = Array.from({length: 100}, (_, i) => {
         const top = Math.floor(rnd() * 94) + 1;
         const left = Math.floor(rnd() * 94) + 1;
         const size = (rnd() * 4 + 2);
         const brightness = 0.4 + rnd() * 0.6;
-        const name = starNames[i % starNames.length];
-        return { top: top + '%', left: left + '%', size: +size.toFixed(1), brightness: +brightness.toFixed(2), name };
+        const name = starNames[i % starNames.length]; // بدون أي أرقام
+        return {
+          top: top + '%',
+          left: left + '%',
+          size: +size.toFixed(1),
+          brightness: +brightness.toFixed(2),
+          name
+        };
       });
 
       starData.forEach(data => {
@@ -92,6 +98,7 @@
         starMap.appendChild(star);
       });
 
+      // إضافة tooltip
       const stars = document.querySelectorAll('.star');
       stars.forEach(star => {
         star.addEventListener('mouseenter', e => {
@@ -110,8 +117,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
