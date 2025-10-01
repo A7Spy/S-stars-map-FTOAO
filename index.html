@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="utf-8" />
-  <title>Star Map (ثابت)</title>
+  <meta charset="utf-8">
+  <title>Star Map ثابت</title>
   <style>
     body {
       margin: 0;
@@ -30,7 +30,7 @@
     }
     .tooltip {
       position: absolute;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0,0,0,0.8);
       color: #fff;
       padding: 4px 8px;
       border-radius: 6px;
@@ -48,74 +48,68 @@
   <div class="tooltip" id="tooltip"></div>
 
   <script>
-    // عنصر الخريطة والـ tooltip
-    const starMap = document.getElementById('starMap');
-    const tooltip = document.getElementById('tooltip');
+    document.addEventListener('DOMContentLoaded', () => {
+      const starMap = document.getElementById('starMap');
+      const tooltip = document.getElementById('tooltip');
 
-    const starNames = [
-      "Altair","Sirius","Vega","Canopus","Aldebaran","Capella","Rigel","Bellatrix","Betelgeuse",
-      "Fomalhaut","Castor","Pollux","Spica","Sadalsuud","Tarazed","Procyon","Deneb","Alnitak",
-      "Alhena","Regulus","Mintaka","Arcturus","Zubeneschamali","Denebola","Dubhe","Polaris",
-      "Caph","Acubens","Kaus Australis","Antares","Thuban","Sadr","Alnair","Alcor","Mizar",
-      "Algol","Alpheratz","Hamal","Markab","Enif"
-    ];
+      const starNames = [
+        "Altair","Sirius","Vega","Canopus","Aldebaran","Capella","Rigel","Bellatrix","Betelgeuse",
+        "Fomalhaut","Castor","Pollux","Spica","Sadalsuud","Tarazed","Procyon","Deneb","Alnitak",
+        "Alhena","Regulus","Mintaka","Arcturus","Zubeneschamali","Denebola","Dubhe","Polaris",
+        "Caph","Acubens","Kaus Australis","Antares","Thuban","Sadr","Alnair","Alcor","Mizar",
+        "Algol","Alpheratz","Hamal","Markab","Enif"
+      ];
 
-    // مولد أرقام عشوائية مُهيأ (LCG) — يعطي نفس الأرقام كل مرة طالما البذرة ثابتة
-    function createSeededRNG(seed) {
-      let s = seed >>> 0;
-      return function() {
-        // LCG parameters (32-bit)
-        s = (s * 1664525 + 1013904223) >>> 0;
-        return s / 4294967296;
-      };
-    }
+      // مولد أرقام ثابتة (seeded RNG) عشان النجوم تبقى في نفس المكان
+      function createSeededRNG(seed) {
+        let s = seed >>> 0;
+        return function() {
+          s = (s * 1664525 + 1013904223) >>> 0;
+          return s / 4294967296;
+        };
+      }
 
-    const rnd = createSeededRNG(1234567); // غيّر القيمة لو تريد مجموعة مواقع مختلفة (لكن ثابتة)
+      const rnd = createSeededRNG(12345);
 
-    // نولّد 100 نجم بمواقع/أحجام/سطوع ثابتة
-    const starData = Array.from({length: 100}, (_, i) => {
-      const top = Math.floor(rnd() * 94) + 1;   // 1% - 94%
-      const left = Math.floor(rnd() * 94) + 1;  // 1% - 94%
-      const size = (rnd() * 4 + 2);             // 2px - 6px
-      const brightness = 0.4 + rnd() * 0.6;     // 0.4 - 1.0
-      const name = starNames[i % starNames.length] + (Math.floor(rnd()*1000)); // اسم مميز قليلاً
-      return { top: top + '%', left: left + '%', size: +size.toFixed(1), brightness: +brightness.toFixed(2), name };
-    });
-
-    // أنشئ DOM للعناصر
-    starData.forEach(data => {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.width = data.size + 'px';
-      star.style.height = data.size + 'px';
-      star.style.top = data.top;
-      star.style.left = data.left;
-      // ضع خلفية وshadow مع مراعاة السطوع
-      star.style.background = `rgba(255,255,255,${data.brightness})`;
-      star.style.boxShadow = `0 0 ${data.size * 3}px rgba(255,255,255,${data.brightness})`;
-      star.setAttribute('data-name', data.name);
-      starMap.appendChild(star);
-    });
-
-    // إضافة التولتيب للأحداث
-    const stars = document.querySelectorAll('.star');
-    stars.forEach(star => {
-      star.addEventListener('mouseenter', e => {
-        tooltip.textContent = star.getAttribute('data-name');
-        tooltip.style.opacity = 1;
+      // إنشاء 100 نجمة بمواقع وأحجام ثابتة
+      const starData = Array.from({length: 100}, (_, i) => {
+        const top = Math.floor(rnd() * 94) + 1;   // 1% - 94%
+        const left = Math.floor(rnd() * 94) + 1;  // 1% - 94%
+        const size = (rnd() * 4 + 2);             // 2px - 6px
+        const brightness = 0.4 + rnd() * 0.6;     // 0.4 - 1.0
+        const name = starNames[i % starNames.length] + (Math.floor(rnd()*1000));
+        return { top: top + '%', left: left + '%', size: +size.toFixed(1), brightness: +brightness.toFixed(2), name };
       });
-      star.addEventListener('mousemove', e => {
-        // استخدم clientX/clientY حتى يعمل داخل نفس الصفحة بشكل أسرع
-        tooltip.style.top = (e.clientY + 12) + 'px';
-        tooltip.style.left = (e.clientX + 12) + 'px';
+
+      starData.forEach(data => {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = data.size + 'px';
+        star.style.height = data.size + 'px';
+        star.style.top = data.top;
+        star.style.left = data.left;
+        star.style.background = `rgba(255,255,255,${data.brightness})`;
+        star.style.boxShadow = `0 0 ${data.size * 3}px rgba(255,255,255,${data.brightness})`;
+        star.setAttribute('data-name', data.name);
+        starMap.appendChild(star);
       });
-      star.addEventListener('mouseleave', () => {
-        tooltip.style.opacity = 0;
+
+      // tooltip للأسماء
+      const stars = document.querySelectorAll('.star');
+      stars.forEach(star => {
+        star.addEventListener('mouseenter', e => {
+          tooltip.textContent = star.getAttribute('data-name');
+          tooltip.style.opacity = 1;
+        });
+        star.addEventListener('mousemove', e => {
+          tooltip.style.top = (e.clientY + 12) + 'px';
+          tooltip.style.left = (e.clientX + 12) + 'px';
+        });
+        star.addEventListener('mouseleave', () => {
+          tooltip.style.opacity = 0;
+        });
       });
     });
-
-    // (اختياري) لو احتجت رؤية بيانات النجوم في الكونسول للتصحيح:
-    // console.log(starData);
   </script>
 </body>
 </html>
