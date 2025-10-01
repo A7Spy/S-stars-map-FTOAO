@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Star Map</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    .star-map {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/0/09/Starry_Night_Sky.jpg') center/cover no-repeat;
+    }
+    .star {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, white 0%, rgba(255,255,255,0.2) 70%);
+      border-radius: 50%;
+      box-shadow: 0 0 8px white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .star:hover {
+      transform: scale(1.6);
+      box-shadow: 0 0 15px #0ff;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+  </style>
+</head>
+<body>
+  <div class="star-map" id="starMap">
+    <!-- Example with 40 stars -->
+    <div class="star" style="top:20%; left:30%;" data-name="Altair"></div>
+    <div class="star" style="top:25%; left:60%;" data-name="Sirius"></div>
+    <div class="star" style="top:40%; left:50%;" data-name="Vega"></div>
+    <div class="star" style="top:50%; left:70%;" data-name="Canopus"></div>
+    <div class="star" style="top:65%; left:20%;" data-name="Aldebaran"></div>
+    <div class="star" style="top:75%; left:45%;" data-name="Capella"></div>
+    <div class="star" style="top:15%; left:80%;" data-name="Rigel"></div>
+    <div class="star" style="top:35%; left:15%;" data-name="Bellatrix"></div>
+    <div class="star" style="top:60%; left:55%;" data-name="Betelgeuse"></div>
+    <div class="star" style="top:10%; left:10%;" data-name="Altair (2)"></div>
+    <div class="star" style="top:80%; left:75%;" data-name="Fomalhaut"></div>
+    <div class="star" style="top:45%; left:85%;" data-name="Vega (2)"></div>
+    <div class="star" style="top:30%; left:40%;" data-name="Capella (2)"></div>
+    <div class="star" style="top:55%; left:35%;" data-name="Castor"></div>
+    <div class="star" style="top:70%; left:60%;" data-name="Pollux"></div>
+    <div class="star" style="top:12%; left:50%;" data-name="Spica"></div>
+    <div class="star" style="top:18%; left:25%;" data-name="Sadalsuud"></div>
+    <div class="star" style="top:42%; left:65%;" data-name="Tarazed"></div>
+    <div class="star" style="top:58%; left:15%;" data-name="Procyon"></div>
+    <div class="star" style="top:68%; left:40%;" data-name="
+    the best of all time شَذى"></div>
+    <div class="star" style="top:22%; left:72%;" data-name="Alnitak"></div>
+    <div class="star" style="top:33%; left:78%;" data-name="Alhena"></div>
+    <div class="star" style="top:47%; left:20%;" data-name="Regulus"></div>
+    <div class="star" style="top:53%; left:48%;" data-name="Mintaka"></div>
+    <div class="star" style="top:61%; left:70%;" data-name="Sadachbia"></div>
+    <div class="star" style="top:73%; left:30%;" data-name="Arcturus"></div>
+    <div class="star" style="top:82%; left:55%;" data-name="Zubeneschamali"></div>
+    <div class="star" style="top:15%; left:15%;" data-name="Denebola"></div>
+    <div class="star" style="top:28%; left:85%;" data-name="Dubhe"></div>
+    <div class="star" style="top:37%; left:5%;" data-name="Polaris"></div>
+    <div class="star" style="top:52%; left:90%;" data-name="Caph"></div>
+    <div class="star" style="top:66%; left:12%;" data-name="Acubens"></div>
+    <div class="star" style="top:78%; left:82%;" data-name="Kaus Australis"></div>
+    <div class="star" style="top:85%; left:22%;" data-name="Antares"></div>
+    <div class="star" style="top:92%; left:65%;" data-name="Pisces Star"></div>
+    <div class="star" style="top:8%; left:45%;" data-name="Boötes"></div>
+    <div class="star" style="top:18%; left:90%;" data-name="Thuban"></div>
+    <div class="star" style="top:44%; left:60%;" data-name="Sadr"></div>
+    <div class="star" style="top:71%; left:10%;" data-name="Alnair"></div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const stars = document.querySelectorAll('.star');
+    const tooltip = document.getElementById('tooltip');
+
+    stars.forEach(star => {
+      star.addEventListener('mouseenter', e => {
+        tooltip.textContent = star.getAttribute('data-name');
+        tooltip.style.opacity = 1;
+      });
+      star.addEventListener('mousemove', e => {
+        tooltip.style.top = (e.pageY + 15) + 'px';
+        tooltip.style.left = (e.pageX + 15) + 'px';
+      });
+      star.addEventListener('mouseleave', () => {
+        tooltip.style.opacity = 0;
+      });
+    });
+  </script>
+</body>
+</html>
