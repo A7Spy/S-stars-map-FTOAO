@@ -2,7 +2,6 @@
   const starMap = document.getElementById('starMap');
   const tooltip = document.getElementById('tooltip');
 
-  // Example star names
   const starNames = [
     "Altair", "Sirius", "Vega", "Canopus", "Aldebaran", "Capella", "Rigel", "Bellatrix", "Betelgeuse", 
     "Fomalhaut", "Castor", "Pollux", "Spica", "Sadalsuud", "Tarazed", "Procyon", "Deneb", "Alnitak", 
@@ -11,15 +10,15 @@
     "Algol", "Alpheratz", "Hamal", "Markab", "Enif"
   ];
 
-  // Fixed positions and sizes for stars
-  const starData = [
-    {top: '10%', left: '20%', size: 3, name: 'Altair'},
-    {top: '30%', left: '50%', size: 4, name: 'Sirius'},
-    {top: '70%', left: '80%', size: 2.5, name: 'Vega'},
-    {top: '50%', left: '10%', size: 3.5, name: 'Canopus'},
-    {top: '20%', left: '70%', size: 2, name: 'Aldebaran'},
-    // أضف بقية النجوم هنا بنفس الطريقة
-  ];
+  // Fixed 100 stars with positions, sizes, and names
+  const starData = Array.from({length: 100}, (_, i) => {
+    return {
+      top: (Math.floor(Math.random() * 95) + 1) + '%',   // 1% - 95%
+      left: (Math.floor(Math.random() * 95) + 1) + '%',  // 1% - 95%
+      size: (Math.random() * 4 + 2).toFixed(1),          // 2px - 6px
+      name: starNames[i % starNames.length]             // recycle names
+    };
+  });
 
   starData.forEach(data => {
     const star = document.createElement('div');
