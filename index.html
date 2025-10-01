@@ -75,7 +75,7 @@
         const left = Math.floor(rnd() * 94) + 1;
         const size = (rnd() * 4 + 2);
         const brightness = 0.4 + rnd() * 0.6;
-        const name = starNames[i % starNames.length]; // بدون أرقام
+        const name = starNames[i % starNames.length];
         return { top: top + '%', left: left + '%', size: +size.toFixed(1), brightness: +brightness.toFixed(2), name };
       });
 
@@ -110,6 +110,7 @@
   </script>
 </body>
 </html>
+
 
 
 
