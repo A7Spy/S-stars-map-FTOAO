@@ -2,87 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fixed Star Map</title>
+  <title>Star Map</title>
   <style>
     body {
       margin: 0;
       background: black;
+      color: white;
+      font-family: Arial, sans-serif;
       overflow: hidden;
     }
-
-    /* نجم عادي */
+    .star-map {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(ellipse at center, #000 0%, #020111 100%);
+    }
     .star {
       position: absolute;
-      width: 4px;
-      height: 4px;
-      background: white;
       border-radius: 50%;
-      box-shadow: 
-        0 0 6px 2px rgba(255,255,255,0.9),
-        0 0 12px 6px rgba(255,255,255,0.5);
-      animation: twinkle 3s infinite ease-in-out;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-
-    /* نجم كبير */
-    .big-star {
-      width: 10px;
-      height: 10px;
-      box-shadow: 
-        0 0 10px 4px rgba(255,255,255,1),
-        0 0 25px 10px rgba(255,255,255,0.7),
-        0 0 40px 15px rgba(255,255,200,0.6);
+    .star:hover {
+      transform: scale(1.8);
+      box-shadow: 0 0 15px #0ff;
     }
-
-    /* وميض */
-    @keyframes twinkle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.1); }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
     }
   </style>
 </head>
 <body>
+  <div class="star-map" id="starMap">
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
   <script>
+    const starMap = document.getElementById('starMap');
+    const tooltip = document.getElementById('tooltip');
+
+    // Example star names
     const starNames = [
-      "Sirius","Canopus","Arcturus","Vega","Capella","Rigel","Procyon","Achernar",
-      "Betelgeuse","Altair","Acrux","Aldebaran","Antares","Spica","Pollux",
-      "Fomalhaut","Deneb","Regulus","Shaula","Castor","Bellatrix","Polaris"
+      "Altair", "Sirius", "Vega", "Canopus", "Aldebaran", "Capella", "Rigel", "Bellatrix", "Betelgeuse", 
+      "Fomalhaut", "Castor", "Pollux", "Spica", "Sadalsuud", "Tarazed", "Procyon", "Deneb", "Alnitak", 
+      "Alhena", "Regulus", "Mintaka", "Arcturus", "Zubeneschamali", "Denebola", "Dubhe", "Polaris", 
+      "Caph", "Acubens", "Kaus Australis", "Antares", "Thuban", "Sadr", "Alnair", "Alcor", "Mizar", 
+      "Algol", "Alpheratz", "Hamal", "Markab", "Enif"
     ];
 
-    // إحداثيات ثابتة للنجوم (x, y, حجم كبير أو لا)
-    const fixedStars = [
-      {x:100, y:150, big:false},
-      {x:300, y:200, big:true},
-      {x:500, y:400, big:false},
-      {x:800, y:250, big:false},
-      {x:1200, y:300, big:true},
-      {x:600, y:100, big:false},
-      {x:900, y:500, big:false},
-      {x:200, y:450, big:false},
-      {x:400, y:350, big:false},
-      {x:1000, y:150, big:false},
-      {x:1100, y:400, big:false},
-      {x:700, y:300, big:false},
-      {x:1300, y:200, big:false},
-      {x:1400, y:450, big:false},
-      {x:150, y:600, big:false},
-      {x:500, y:650, big:false},
-      {x:800, y:600, big:false},
-      {x:300, y:700, big:false},
-      {x:1000, y:700, big:false},
-      {x:1200, y:650, big:false}
-    ];
+    // Generate many stars with random positions, sizes, brightness
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      const size = Math.random() * 4 + 2; // star size between 2 and 6 px
+      const brightness = Math.random() * 0.8 + 0.2; // opacity between 0.2 and 1
 
-    // توليد النجوم حسب القائمة
-    fixedStars.forEach((pos, i) => {
-      const star = document.createElement("div");
-      star.classList.add("star");
-      if (pos.big) star.classList.add("big-star");
+      star.classList.add('star');
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.background = `rgba(255,255,255,${brightness})`;
+      star.style.boxShadow = `0 0 ${size * 3}px rgba(255,255,255,${brightness})`;
 
-      star.style.left = `${pos.x}px`;
-      star.style.top = `${pos.y}px`;
-      star.title = starNames[i % starNames.length];
+      // assign random name from list
+      const name = starNames[Math.floor(Math.random() * starNames.length)];
+      star.setAttribute('data-name', name);
 
-      document.body.appendChild(star);
+      starMap.appendChild(star);
+    }
+
+    const stars = document.querySelectorAll('.star');
+
+    stars.forEach(star => {
+      star.addEventListener('mouseenter', e => {
+        tooltip.textContent = star.getAttribute('data-name');
+        tooltip.style.opacity = 1;
+      });
+      star.addEventListener('mousemove', e => {
+        tooltip.style.top = (e.pageY + 15) + 'px';
+        tooltip.style.left = (e.pageX + 15) + 'px';
+      });
+      star.addEventListener('mouseleave', () => {
+        tooltip.style.opacity = 0;
+      });
     });
   </script>
 </body>
