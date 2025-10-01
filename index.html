@@ -9,40 +9,48 @@
       background: black;
       overflow: hidden;
     }
-
-    /* شكل نجم بخمس زوايا */
     .star {
       position: absolute;
-      width: 12px;
-      height: 12px;
       background: white;
-      clip-path: polygon(
-        50% 0%,
-        61% 35%,
-        98% 35%,
-        68% 57%,
-        79% 91%,
-        50% 70%,
-        21% 91%,
-        32% 57%,
-        2% 35%,
-        39% 35%
-      );
-      box-shadow: 0 0 8px rgba(255,255,255,0.8);
-      opacity: 0.9;
-      animation: twinkle 3s infinite ease-in-out;
+      border-radius: 50%;
+      opacity: 0.8;
     }
-
-    /* نجم كبير */
+    /* تأثير وميض النجمة */
+    .star::before, .star::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: rgba(255,255,255,0.5);
+      transform: translate(-50%, -50%) rotate(45deg);
+      border-radius: 2px;
+    }
+    .star::before {
+      width: 12px;
+      height: 2px;
+    }
+    .star::after {
+      width: 2px;
+      height: 12px;
+    }
+    /* النجوم الكبيرة */
     .big-star {
-      width: 24px;
-      height: 24px;
-      box-shadow: 0 0 20px 8px rgba(255,255,255,1);
+      width: 10px !important;
+      height: 10px !important;
+      box-shadow: 0 0 20px 8px rgba(255,255,255,0.9);
+      opacity: 1;
     }
-
-    @keyframes twinkle {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
+    .big-star::before {
+      width: 24px;
+      height: 3px;
+    }
+    .big-star::after {
+      width: 3px;
+      height: 24px;
+    }
+    .star:hover::after,
+    .star:hover::before {
+      background: yellow;
     }
   </style>
 </head>
@@ -53,28 +61,39 @@
       "Betelgeuse","Hadar","Altair","Acrux","Aldebaran","Antares","Spica","Pollux",
       "Fomalhaut","Deneb","Mimosa","Regulus","Adhara","Shaula","Castor","Bellatrix",
       "Elnath","Miaplacidus","Alnilam","Alnair","Alioth","Alnitak","Dubhe","Merak",
-      "Wezen","Sargas","Kaus Australis","Avior","Alhena","Peacock","Mirzam","Polaris"
+      "Wezen","Sargas","Kaus Australis","Avior","Alhena","Peacock","Mirzam","Polaris",
+      "Menkalinan","Alphard","Rasalhague","Algol","Zubenelgenubi","Markab","Sadalmelik",
+      "Nunki","Denebola","Alsephina","Gacrux"
     ];
 
     function random(min, max) {
       return Math.random() * (max - min) + min;
     }
 
+    // نعمل 100 نجمة
     for (let i = 0; i < 100; i++) {
       const star = document.createElement("div");
       star.classList.add("star");
-      star.style.left = `${random(0, window.innerWidth)}px`;
-      star.style.top = `${random(0, window.innerHeight)}px`;
-
-      if (i === 10 || i === 50) { // نجمتين كبار
+      
+      // خلي نجمتين كبار مميزين
+      if (i === 10 || i === 50) {
         star.classList.add("big-star");
         star.title = starNames[Math.floor(Math.random() * starNames.length)] + " (Giant)";
       } else {
+        const size = random(2, 5);
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${random(0, window.innerWidth)}px`;
+        star.style.top = `${random(0, window.innerHeight)}px`;
         star.title = starNames[Math.floor(Math.random() * starNames.length)];
       }
+
+      star.style.left = `${random(0, window.innerWidth)}px`;
+      star.style.top = `${random(0, window.innerHeight)}px`;
 
       document.body.appendChild(star);
     }
   </script>
 </body>
 </html>
+
