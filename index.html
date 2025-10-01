@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>Star Map ثابت</title>
   <style>
     body {
@@ -22,7 +22,6 @@
       border-radius: 50%;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
-      will-change: transform, box-shadow;
     }
     .star:hover {
       transform: scale(1.8);
@@ -48,6 +47,7 @@
   <div class="tooltip" id="tooltip"></div>
 
   <script>
+    // ننتظر تحميل كامل DOM قبل تنفيذ الكود
     document.addEventListener('DOMContentLoaded', () => {
       const starMap = document.getElementById('starMap');
       const tooltip = document.getElementById('tooltip');
@@ -60,7 +60,7 @@
         "Algol","Alpheratz","Hamal","Markab","Enif"
       ];
 
-      // مولد أرقام ثابتة (seeded RNG) عشان النجوم تبقى في نفس المكان
+      // مولد أرقام ثابتة (seeded RNG)
       function createSeededRNG(seed) {
         let s = seed >>> 0;
         return function() {
@@ -69,14 +69,14 @@
         };
       }
 
-      const rnd = createSeededRNG(12345);
+      const rnd = createSeededRNG(98765); // نفس المواقع كل مرة
 
-      // إنشاء 100 نجمة بمواقع وأحجام ثابتة
+      // إنشاء 100 نجمة
       const starData = Array.from({length: 100}, (_, i) => {
-        const top = Math.floor(rnd() * 94) + 1;   // 1% - 94%
-        const left = Math.floor(rnd() * 94) + 1;  // 1% - 94%
-        const size = (rnd() * 4 + 2);             // 2px - 6px
-        const brightness = 0.4 + rnd() * 0.6;     // 0.4 - 1.0
+        const top = Math.floor(rnd() * 94) + 1;   
+        const left = Math.floor(rnd() * 94) + 1;  
+        const size = (rnd() * 4 + 2);             
+        const brightness = 0.4 + rnd() * 0.6;     
         const name = starNames[i % starNames.length] + (Math.floor(rnd()*1000));
         return { top: top + '%', left: left + '%', size: +size.toFixed(1), brightness: +brightness.toFixed(2), name };
       });
