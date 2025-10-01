@@ -1,121 +1,60 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>FTOAO </title>
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-    .star-map {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(ellipse at center, #000 0%, #020111 100%);
-    }
-    .star {
-      position: absolute;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .star:hover {
-      transform: scale(1.8);
-      box-shadow: 0 0 15px #0ff;
-    }
-    .tooltip {
-      position: absolute;
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 14px;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s;
-      z-index: 9999;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>FTOAO </title>
+<style>
+  body { margin:0; background:black; font-family:Arial; overflow:hidden; }
+  .star-map { position:relative; width:100vw; height:100vh; background:radial-gradient(ellipse at center,#000 0%,#020111 100%); }
+  .star { position:absolute; border-radius:50%; cursor:pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .star:hover { transform:scale(1.8); box-shadow:0 0 15px #0ff; }
+  .tooltip { position:absolute; background:rgba(0,0,0,0.8); color:#fff; padding:4px 8px; border-radius:6px; font-size:14px; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.15s; z-index:9999; }
+</style>
 </head>
 <body>
   <div class="star-map" id="starMap"></div>
   <div class="tooltip" id="tooltip"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const starMap = document.getElementById('starMap');
-      const tooltip = document.getElementById('tooltip');
+    const starMap = document.getElementById('starMap');
+    const tooltip = document.getElementById('tooltip');
 
-      const starNames = [
-        "Altair","Sirius","Vega","Canopus","شَذى","Capella","Rigel","Bellatrix","Betelgeuse",
-        "Fomalhaut","Castor","Pollux","Spica","Sadalsuud","Tarazed","Procyon","Deneb","Alnitak",
-        "Alhena","Regulus","Mintaka","Arcturus","Zubeneschamali","Denebola","Dubhe"," عزوز",
-        "Caph","Acubens","Kaus Australis","Antares","Thuban","Sadr","Alnair","Alcor","Mizar",
-        "Algol","Alpheratz","Hamal","Markab","Enif"
-      ];
+    const starNames = ["Altair","Sirius","Vega","Canopus","شَذى","Capella","Rigel","Bellatrix","Betelgeuse",
+      "Fomalhaut","Castor","Pollux","Spica","Sadalsuud","Tarazed","Procyon","Deneb","Alnitak",
+      "Alhena","Regulus","Mintaka","Arcturus","Zubeneschamali","Denebola","Dubhe","عزوز",
+      "Caph","Acubens","Kaus Australis","Antares","Thuban","Sadr","Alnair","Alcor","Mizar",
+      "Algol","Alpheratz","Hamal","Markab","Enif"];
 
-      // مولد أرقام ثابتة (seeded RNG)
-      function createSeededRNG(seed) {
-        let s = seed >>> 0;
-        return function() {
-          s = (s * 1664525 + 1013904223) >>> 0;
-          return s / 4294967296;
-        };
-      }
+    function createSeededRNG(seed) { let s = seed>>>0; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+    const rnd = createSeededRNG(123456);
 
-      const rnd = createSeededRNG(123456); // نفس المواقع كل مرة
+    const starData = Array.from({length:100}, (_,i)=>{
+      const top=Math.floor(rnd()*94)+1;
+      const left=Math.floor(rnd()*94)+1;
+      const size=(rnd()*4+2);
+      const brightness=0.4+rnd()*0.6;
+      const name=starNames[i%starNames.length];
+      return {top:top+'%', left:left+'%', size:+size.toFixed(1), brightness:+brightness.toFixed(2), name};
+    });
 
-      // إنشاء 100 نجمة
-      const starData = Array.from({length: 100}, (_, i) => {
-        const top = Math.floor(rnd() * 94) + 1;
-        const left = Math.floor(rnd() * 94) + 1;
-        const size = (rnd() * 4 + 2);
-        const brightness = 0.4 + rnd() * 0.6;
-        const name = starNames[i % starNames.length]; // بدون أي أرقام
-        return {
-          top: top + '%',
-          left: left + '%',
-          size: +size.toFixed(1),
-          brightness: +brightness.toFixed(2),
-          name
-        };
-      });
+    starData.forEach(data=>{
+      const star=document.createElement('div');
+      star.className='star';
+      star.style.width=data.size+'px';
+      star.style.height=data.size+'px';
+      star.style.top=data.top;
+      star.style.left=data.left;
+      star.style.background=`rgba(255,255,255,${data.brightness})`;
+      star.style.boxShadow=`0 0 ${data.size*3}px rgba(255,255,255,${data.brightness})`;
+      star.setAttribute('data-name', data.name);
+      starMap.appendChild(star);
+    });
 
-      starData.forEach(data => {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.width = data.size + 'px';
-        star.style.height = data.size + 'px';
-        star.style.top = data.top;
-        star.style.left = data.left;
-        star.style.background = `rgba(255,255,255,${data.brightness})`;
-        star.style.boxShadow = `0 0 ${data.size * 3}px rgba(255,255,255,${data.brightness})`;
-        star.setAttribute('data-name', data.name);
-        starMap.appendChild(star);
-      });
-
-      // إضافة tooltip
-      const stars = document.querySelectorAll('.star');
-      stars.forEach(star => {
-        star.addEventListener('mouseenter', e => {
-          tooltip.textContent = star.getAttribute('data-name');
-          tooltip.style.opacity = 1;
-        });
-        star.addEventListener('mousemove', e => {
-          tooltip.style.top = (e.clientY + 12) + 'px';
-          tooltip.style.left = (e.clientX + 12) + 'px';
-        });
-        star.addEventListener('mouseleave', () => {
-          tooltip.style.opacity = 0;
-        });
-      });
+    document.querySelectorAll('.star').forEach(star=>{
+      star.addEventListener('mouseenter',e=>{ tooltip.textContent=star.getAttribute('data-name'); tooltip.style.opacity=1; });
+      star.addEventListener('mousemove',e=>{ tooltip.style.top=(e.clientY+12)+'px'; tooltip.style.left=(e.clientX+12)+'px'; });
+      star.addEventListener('mouseleave',()=>{ tooltip.style.opacity=0; });
     });
   </script>
 </body>
 </html>
-
-
